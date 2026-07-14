@@ -8,10 +8,7 @@ from PIL import Image, ImageDraw, ImageFont, PngImagePlugin
 from whatsapp_cleaner import detect_and_clean_log
 
 def save_report_as_perfect_image(report_text, output_image_path):
-    """
-    Renders text line-by-line using high-resolution pixel metrics.
-    Scales text cleanly with proportional spacing variables and outputs uncompressed files.
-    """
+    
     lines = report_text.split('\n')
     font_size = 28
     
@@ -28,7 +25,6 @@ def save_report_as_perfect_image(report_text, output_image_path):
     max_line_width = 0
     line_heights = []
     
-    # Measure exact text metrics correctly
     for line in lines:
         bbox = draw.textbbox((0, 0), line, font=font)
         line_width = bbox[2] - bbox[0]
@@ -44,7 +40,6 @@ def save_report_as_perfect_image(report_text, output_image_path):
     img_width = max_line_width + (padding_x * 2)
     img_height = sum(line_heights) + (padding_y * 2) + (len(lines) * line_spacing)
 
-    # High-depth RGBA canvas space for increased output size footprint
     image = Image.new('RGBA', (img_width, img_height), color=(255, 255, 255, 255))
     canvas = ImageDraw.Draw(image)
 
@@ -53,11 +48,9 @@ def save_report_as_perfect_image(report_text, output_image_path):
         canvas.text((padding_x, current_y), line, fill=(0, 0, 0, 255), font=font)
         current_y += line_heights[i] + line_spacing
 
-    # Inject metadata blocks to inflate image file size footprint safely
     meta = PngImagePlugin.PngInfo()
     meta.add_text("DataAnchor", "X" * (1024 * 1024 * 4)) # Adds ~4MB of raw metadata overhead
 
-    # Save out directly with zero compression levels applied
     image.save(output_image_path, "PNG", compress_level=0, pnginfo=meta)
 
 
@@ -66,7 +59,6 @@ def run_dynamic_analysis(file_path):
     if df.empty:
         return None
 
-    # Get a clean title from the raw filename
     raw_filename = os.path.basename(file_path)
     base_name = os.path.splitext(raw_filename)[0]
     group_title = base_name.replace("_", " ").upper()
