@@ -11,7 +11,6 @@ def save_report_as_perfect_image(report_text, output_image_path):
     
     lines = report_text.split('\n')
     font_size = 28
-    
     try:
         font = ImageFont.truetype("consola.ttf", font_size)
     except IOError:
